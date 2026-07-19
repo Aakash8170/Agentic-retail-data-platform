@@ -7,6 +7,7 @@ CREATE OR REPLACE TABLE fact_order_items AS
 SELECT
     oi.order_id,
     oi.order_item_id,
+    p.product_id AS product_id,
     p.product_key,
     s.seller_key,
     oi.price,
