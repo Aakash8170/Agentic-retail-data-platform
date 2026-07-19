@@ -24,8 +24,12 @@ dev = [
     "ruff>=0.5",
 ]
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["retail_pipeline", "retail_pipeline.*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

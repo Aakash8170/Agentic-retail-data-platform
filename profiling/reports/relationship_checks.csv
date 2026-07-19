@@ -1,0 +1,6 @@
+check_name,failure_count
+orders_without_customer,0
+order_items_without_order,0
+order_items_without_product,0
+order_items_without_seller,0
+payments_without_order,0

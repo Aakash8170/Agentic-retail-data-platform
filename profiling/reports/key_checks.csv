@@ -1,0 +1,5 @@
+key_name,row_count,non_null_count,distinct_count,null_count,duplicate_count
+customers.customer_id,99441,99441,99441,0,0
+orders.order_id,99441,99441,99441,0,0
+products.product_id,32951,32951,32951,0,0
+sellers.seller_id,3095,3095,3095,0,0

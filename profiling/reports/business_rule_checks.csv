@@ -1,0 +1,8 @@
+check_name,failure_count
+non_positive_item_price,0
+negative_freight_value,0
+negative_payment_value,0
+negative_payment_installments,0
+delivered_order_missing_delivery_timestamp,8
+delivery_before_purchase,0
+carrier_handoff_before_purchase,166

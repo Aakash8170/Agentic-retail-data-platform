@@ -1,0 +1,2 @@
+row_count,order_id_nulls,customer_id_nulls,order_status_nulls,purchase_timestamp_nulls,approved_timestamp_nulls,carrier_timestamp_nulls,delivered_timestamp_nulls,estimated_delivery_timestamp_nulls
+99441,0,0,0,0,160,1783,2965,0
