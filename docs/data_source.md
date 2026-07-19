@@ -69,6 +69,3 @@ The tests/fixtures/olist small CSVs mirror the production filenames and
 are intended for fast, deterministic CI runs. They include the minimal
 set of data needed to exercise transformations, dim_date generation and
 mart aggregations.
-
-For full dataset processing, place the full Olist CSVs under `data/raw/`
-matching the expected filenames.

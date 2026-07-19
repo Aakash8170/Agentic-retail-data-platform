@@ -135,26 +135,26 @@ Below is a compact representation of the repository layout. Use this as a quick 
 ```
 .
 ├── .github/
-│   └── workflows/ci.yml                # CI workflow
+│   └── workflows/ci.yml                
 ├── data/
-│   └── database/retail.duckdb          # default DuckDB database (generated)
+│   └── database/retail.duckdb          
 ├── profiling/
-│   ├── sql/                            # profiling SQL checks
-│   └── reports/                        # exported profiling CSVs
+│   ├── sql/                            
+│   └── reports/                        
 ├── src/
 │   └── retail_pipeline/
-│       ├── database.py                 # DuckDB connection helper
-│       ├── ingestion/load_raw.py       # CSV ingestion into raw schema
-│       ├── profiling/run_profiles.py   # run profiling SQL and export reports
-│       ├── sql_runner.py               # discover and execute SQL files
-│       ├── pipeline.py                 # CLI entrypoint (runs full pipeline)
+│       ├── database.py                 
+│       ├── ingestion/load_raw.py       
+│       ├── profiling/run_profiles.py   
+│       ├── sql_runner.py               
+│       ├── pipeline.py                 
 │       └── transformations/
 │           └── sql/
-│               ├── staging/            # staging SQL files
-│               ├── core/               # dimensional model SQL files
-│               └── marts/              # mart SQL files
-├── tests/                              # unit tests and small fixtures
-│   └── fixtures/olist/                  # lightweight CSV fixtures for CI
+│               ├── staging/            
+│               ├── core/               
+│               └── marts/              
+├── tests/                              
+│   └── fixtures/olist/                 
 └── README.md
 ```
 
@@ -183,5 +183,3 @@ Common commands
 Notes on repo changes
 ---------------------
 - Documentation files were consolidated into README.md. If you prefer a separate docs/ directory (for GitHub Pages or mkdocs), the README content can be split into multiple pages.
-
-If you'd like the repository tree expanded or a machine-readable manifest (e.g., CODEOWNERS, or a CONTRIBUTING.md), tell me where you'd like it and I will add it.
