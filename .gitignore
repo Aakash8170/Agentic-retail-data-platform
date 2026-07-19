@@ -216,3 +216,49 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Python virtual environment
+.venv/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Data files
+data/raw/*
+data/sample/*
+data/processed/*
+data/quarantine/*
+
+# Preserve the folders
+!data/raw/.gitkeep
+!data/sample/.gitkeep
+!data/processed/.gitkeep
+!data/quarantine/.gitkeep
+
+# Local databases
+*.duckdb
+*.duckdb.wal
+*.db
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Testing and code quality
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+
+# Notebook cache
+.ipynb_checkpoints/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Local environment files
+.vscode/settings.json
