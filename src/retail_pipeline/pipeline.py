@@ -244,7 +244,7 @@ def validate_database(database_path: Path) -> None:
     return None
 
 
-def parse_arguments() -> argparse.Namespace:
+def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the retail pipeline end-to-end")
 
     parser.add_argument(
@@ -268,11 +268,11 @@ def parse_arguments() -> argparse.Namespace:
         default=DEFAULT_REPORT_DIRECTORY,
     )
 
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
-def main() -> None:
-    args = parse_arguments()
+def main(argv: list[str] | None = None) -> None:
+    args = parse_arguments(argv)
 
     try:
         run_pipeline(

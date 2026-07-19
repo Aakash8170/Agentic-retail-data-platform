@@ -55,7 +55,7 @@ def test_main_exits_nonzero_when_stage_fails(monkeypatch):
     monkeypatch.setattr(pipeline, "run_pipeline", fail_run_pipeline)
 
     with pytest.raises(SystemExit) as excinfo:
-        pipeline.main()
+        pipeline.main([])
 
     assert excinfo.value.code == 1
 
