@@ -262,3 +262,8 @@ Thumbs.db
 
 # Local environment files
 .vscode/settings.json
+
+# Profiling reports and temp dbs created by CI/pipeline
+profiling/reports/
+/tmp/profiling-reports/
+/tmp/retail.duckdb

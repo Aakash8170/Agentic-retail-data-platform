@@ -1,0 +1,2 @@
+order_id,review_id,review_score,review_comment_message,review_creation_date,review_answer_timestamp
+o1,r1,5,Good,2020-01-03 00:00:00,2020-01-04 00:00:00

@@ -6,7 +6,6 @@ from pathlib import Path
 from retail_pipeline.database import DEFAULT_DATABASE_PATH, get_connection
 from retail_pipeline.ingestion.load_raw import (
     RAW_DATA_DIRECTORY,
-    SOURCE_FILES,
     load_raw_tables,
 )
 from retail_pipeline.profiling.run_profiles import (
@@ -15,7 +14,6 @@ from retail_pipeline.profiling.run_profiles import (
     run_profiles,
 )
 from retail_pipeline.sql_runner import run_sql_files
-
 
 STAGING_SQL_DIR = Path("src/retail_pipeline/transformations/sql/staging")
 CORE_SQL_DIR = Path("src/retail_pipeline/transformations/sql/core")
@@ -174,7 +172,10 @@ def validate_database(database_path: Path) -> None:
             " FROM mart.customer_summary"
         ).fetchone()
         if cs_counts[0] != cs_counts[1]:
-            raise ValueError("mart.customer_summary has duplicate customer_unique_id rows")
+            raise ValueError(
+                "mart.customer_summary has duplicate "
+                "customer_unique_id rows"
+            )
 
         pp_counts = conn.execute(
             "SELECT COUNT(*), COUNT(DISTINCT product_id)"

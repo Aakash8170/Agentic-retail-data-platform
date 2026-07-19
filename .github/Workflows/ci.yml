@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install .[dev]
+
+      - name: Lint with ruff
+        run: python -m ruff check .
+
+      - name: Run unit tests
+        run: python -m pytest -q
+
+      - name: Run lightweight end-to-end pipeline against fixtures
+        env:
+          PYTHONPATH: ./src
+        run: |
+          rm -f /tmp/retail.duckdb || true
+          python -m retail_pipeline.pipeline \
+            --raw-directory tests/fixtures/olist \
+            --database /tmp/retail.duckdb \
+            --profile-report-directory /tmp/profiling-reports
+
+      - name: Upload profiling reports (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: profiling-reports
+          path: /tmp/profiling-reports

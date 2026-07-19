@@ -1,0 +1,4 @@
+order_id,order_item_id,product_id,seller_id,shipping_limit_date,price,freight_value
+o1,1,p1,s1,2020-01-02 00:00:00,10.0,1.0
+o1,2,p2,s1,2020-01-02 00:00:00,20.0,2.0
+o2,1,p1,s1,2020-01-03 00:00:00,15.0,1.5
