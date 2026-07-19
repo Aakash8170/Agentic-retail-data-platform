@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from retail_pipeline import pipeline
+from src.retail_pipeline import pipeline
 
 
 def test_run_pipeline_calls_stages_in_order(monkeypatch, tmp_path: Path) -> None:
@@ -64,7 +64,7 @@ def test_validate_database_raises_on_missing_tables(tmp_path: Path):
     # create an empty DuckDB file with only a subset of required tables
     db_file = tmp_path / "validate.duckdb"
 
-    from retail_pipeline.database import get_connection
+    from src.retail_pipeline.database import get_connection
 
     with get_connection(db_file) as conn:
         conn.execute("CREATE SCHEMA IF NOT EXISTS raw")
