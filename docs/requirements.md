@@ -22,19 +22,13 @@ The first version will process:
 
 The project will demonstrate:
 
-- Batch ingestion
-- Data profiling
-- Schema validation
-- Data-quality testing
-- Bronze, silver, and gold data layers
-- Dimensional modeling
-- Incremental processing
-- Idempotent pipeline execution
-- SQL transformations
-- Troubleshooting
-- Automated testing
-- GitHub Actions CI
-- AI-assisted development
+- Batch ingestion into DuckDB
+- SQL-based profiling and CSV export
+- Defensive staging layer with explicit CAST / TRY_CAST
+- Dimensional modeling and fact/mart materialization
+- Idempotent transformations (CREATE OR REPLACE TABLE)
+- Automated testing and CI with GitHub Actions
+- Deterministic SQL execution ordering
 
 ## Out of scope for the first version
 

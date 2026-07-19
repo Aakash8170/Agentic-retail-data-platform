@@ -8,58 +8,67 @@ dataset contains customer, order, product, payment, seller, review,
 geolocation, and product-category information.
 
 Raw source files are stored locally under `data/raw/` and are not
-committed to Git.
+committed to Git. The ingestion layer reads these CSVs with DuckDB's
+read_csv(auto_detect) and materializes them into the `raw` schema.
 
-## Source tables
+## Source tables (mapping to raw schema)
 
-| Source file | Expected grain | Candidate key | Main relationships |
-|---|---|---|---|
-| `olist_customers_dataset.csv` | One row per order-specific customer record | `customer_id` | Joins to orders |
-| `olist_orders_dataset.csv` | One row per order | `order_id` | Joins to customers, items, payments, and reviews |
-| `olist_order_items_dataset.csv` | One row per order item | `order_id`, `order_item_id` | Joins to orders, products, and sellers |
-| `olist_order_payments_dataset.csv` | One row per payment sequence | `order_id`, `payment_sequential` | Joins to orders |
-| `olist_order_reviews_dataset.csv` | One row per review record | `review_id`, possibly combined with `order_id` | Joins to orders |
-| `olist_products_dataset.csv` | One row per product | `product_id` | Joins to order items |
-| `olist_sellers_dataset.csv` | One row per seller | `seller_id` | Joins to order items |
-| `olist_geolocation_dataset.csv` | One row per geolocation record | No guaranteed unique key | Supports geographic enrichment |
-| `product_category_name_translation.csv` | One row per product-category translation | `product_category_name` | Joins to products |
+| Source file | raw table | Expected grain | Candidate key | Main relationships |
+|---|---:|---|---|---|
+| `olist_customers_dataset.csv` | `raw.customers` | One row per customer record tied to an order | `customer_id` | Joins to `raw.orders` (order-level customer_id), maps to `staging.customers` |
+| `olist_orders_dataset.csv` | `raw.orders` | One row per order | `order_id` | Joins to `raw.customers`, `raw.order_items`, `raw.order_payments`, `raw.order_reviews` |
+| `olist_order_items_dataset.csv` | `raw.order_items` | One row per order item | `order_id`, `order_item_id` | Joins to `raw.orders`, `raw.products`, `raw.sellers` |
+| `olist_order_payments_dataset.csv` | `raw.order_payments` | One row per payment record per order | `order_id`, `payment_sequential` | Joins to `raw.orders` |
+| `olist_order_reviews_dataset.csv` | `raw.order_reviews` | One row per review | `review_id` | Joins to `raw.orders` |
+| `olist_products_dataset.csv` | `raw.products` | One row per product | `product_id` | Joins to `raw.order_items` |
+| `olist_sellers_dataset.csv` | `raw.sellers` | One row per seller | `seller_id` | Joins to `raw.order_items` |
+| `olist_geolocation_dataset.csv` | `raw.geolocation` | One or more rows per postal code prefix | (none guaranteed) | Supports geographic enrichment of sellers/customers |
+| `product_category_name_translation.csv` | `raw.category_translation` | One row per category translation | `product_category_name` | Joins to `raw.products` / `staging.products` |
 
 ## Important source-model observations
 
-### Customers
+- `customer_id` vs `customer_unique_id`: use `customer_unique_id` for
+  analytics-level customer identity; `customer_id` is order-scoped.
 
-The source contains both `customer_id` and `customer_unique_id`.
+- Timestamps: orders include multiple lifecycle timestamps. Staging
+  converts those to DuckDB TIMESTAMP via TRY_CAST so NULLs and empty
+  strings are handled safely.
 
-`customer_id` identifies the customer record used for a particular
-order. The same real customer may have different `customer_id` values
-across orders.
+- Payments and items: payments are at the payment-row granularity and
+  must be carefully aggregated to avoid double-counting when joining
+  with order items — marts use pre-aggregation patterns.
 
-`customer_unique_id` is the better identifier for customer-level
-analytics.
+- Geolocation: may contain multiple rows per postal prefix; define
+  aggregation/deduplication rules before joining to transactional
+  tables.
 
-### Orders
+## Staging transformation patterns
 
-The orders table contains the order lifecycle, including purchase,
-approval, carrier delivery, customer delivery, and estimated delivery
-timestamps.
+Staging SQL follows a defensive parsing pattern to work with both CSVs
+and typed DuckDB columns. Common patterns used in `transformations/sql/staging/*`:
 
-### Order items
+- Convert empty strings to NULL and trim whitespace:
 
-An order may contain multiple order items. The expected grain is one
-row per `order_id` and `order_item_id`.
+  ```sql
+  NULLIF(TRIM(CAST(col AS VARCHAR)), '') AS col
+  ```
 
-### Payments
+- Safe numeric/timestamp parsing:
 
-An order can have multiple payment records. Therefore, `order_id`
-alone is not expected to be unique in the payments source.
+  ```sql
+  TRY_CAST(NULLIF(TRIM(CAST(price AS VARCHAR)), '') AS DOUBLE) AS price
+  TRY_CAST(NULLIF(TRIM(CAST(order_purchase_timestamp AS VARCHAR)), '') AS TIMESTAMP) AS order_purchase_timestamp
+  ```
 
-### Reviews
+These patterns avoid DuckDB binder errors when the underlying CSVs use
+mixed types and ensure staging tables have predictable column types.
 
-Review IDs may not always behave as a simple one-row-per-order key.
-Uniqueness and relationship behavior must be confirmed through profiling.
+## Using the fixtures
 
-### Geolocation
+The tests/fixtures/olist small CSVs mirror the production filenames and
+are intended for fast, deterministic CI runs. They include the minimal
+set of data needed to exercise transformations, dim_date generation and
+mart aggregations.
 
-The geolocation source may contain multiple rows for the same postal
-code prefix. It should not be joined directly to transactional tables
-without first defining a deduplication or aggregation rule.
+For full dataset processing, place the full Olist CSVs under `data/raw/`
+matching the expected filenames.
