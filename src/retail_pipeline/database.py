@@ -7,7 +7,6 @@ from pathlib import Path
 import duckdb
 from duckdb import DuckDBPyConnection
 
-
 DEFAULT_DATABASE_PATH = Path("data/database/retail.duckdb")
 
 

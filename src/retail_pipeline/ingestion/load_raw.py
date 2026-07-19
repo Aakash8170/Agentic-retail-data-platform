@@ -5,7 +5,6 @@ from pathlib import Path
 
 from retail_pipeline.database import DEFAULT_DATABASE_PATH, get_connection
 
-
 RAW_DATA_DIRECTORY = Path("data/raw")
 
 SOURCE_FILES = {
